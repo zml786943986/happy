@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.hnust.dao.SysMenuMapper" >
+  <resultMap type="com.cn.hnust.domain.SysMenu"
+		id="sysMenuMap">
+		<id property="menuId" column="MENU_ID" />
+		<result property="upMenuId" column="UP_MENU_ID" />
+		<result property="menuName" column="MENU_NAME" />
+		<result property="menuPath" column="MENU_PATH" />
+		<result property="iconsName" column="ICONS_NAME" />
+		<result property="active" column="ACTIVE" />
+		<result property="mLevel" column="MLEVEL" />
+		<result property="menuSort" column="MENU_SORT" />
+	</resultMap>
+	
+  <sql id="menuPropertyParam">
+		TM.MENU_ID,
+		TM.UP_MENU_ID,
+		TM.MENU_NAME,
+		TM.MENU_PATH,
+		TM.ICONS_NAME,
+		TM.ACTIVE,
+		TM.MLEVEL,
+		TM.MENU_SORT,
+		TM.CREATE_USER,
+		TM.UPDATE_USER,
+		TM.CREATE_TIME,
+		TM.UPDATE_TIME
+	</sql>
+  
+  <!-- 查询菜单 -->
+	<select id="accordionMenuList"
+		parameterType="com.cn.hnust.domain.SysMenu"
+		resultMap="sysMenuMap">
+		SELECT
+		<include refid="menuPropertyParam" />
+		FROM T_DOP_SYS_MENU TM
+		WHERE 1=1
+		<if test="menuId !=null">
+			AND TM.UP_MENU_ID = #{menuId,jdbcType=VARCHAR}
+		</if>
+		<if test="menuIds !=null">
+			AND TM.MENU_ID in ${menuIds}
+		</if>
+		<if test="active !=null and active !=''">
+			AND TM.ACTIVE = #{active,jdbcType=VARCHAR}
+		</if>
+		ORDER BY TM.MENU_SORT
+	</select>
+</mapper>
