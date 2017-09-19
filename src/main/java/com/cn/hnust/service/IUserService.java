@@ -1,5 +1,8 @@
 package com.cn.hnust.service;
 
+import java.util.List;
+
+import com.cn.hnust.domain.SysMenu;
 import com.cn.hnust.domain.User;
 
 /**
@@ -14,4 +17,11 @@ import com.cn.hnust.domain.User;
  */
 public interface IUserService {
 	public User getUserById(int userId);
+	
+	public List<User> queryUserList(User u,int currentPage, int pageSize);
+	
+	public Integer countUser(User u);
+	
+	public List getAllMenuList(SysMenu menu);
+	
 }

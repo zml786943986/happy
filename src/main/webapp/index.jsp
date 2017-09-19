@@ -7,6 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h2>Hello World!</h2>
+<h2>
+	<a href="/storm/user/toIndex.do">加载用户</a>
+	<a href="/storm/user/toMenu.do">加载菜单</a>
+</h2>
 </body>
 </html>

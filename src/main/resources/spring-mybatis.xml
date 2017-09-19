@@ -4,12 +4,17 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
 	http://www.springframework.org/schema/context  
 	http://www.springframework.org/schema/context/spring-context-3.1.xsd  
 	http://www.springframework.org/schema/mvc  
-	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 	<!-- 自动扫描 -->
 	<context:component-scan base-package="com.cn.hnust" />
 	<!-- 引入配置文件 -->
@@ -41,6 +46,9 @@
 		<property name="dataSource" ref="dataSource" />
 		<!-- 自动扫描mapping.xml文件 -->
 		<property name="mapperLocations" value="classpath:com/cn/hnust/mapping/*.xml"></property>
+		<property name="plugins">
+			<ref bean="sqlPageInterceptor" />
+		</property>
 	</bean>
 
 	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
@@ -50,11 +58,32 @@
 	</bean>
 	
 	<!-- 开启事务注解驱动 -->  
-    <tx:annotation-driven /> 
+<!--     <tx:annotation-driven />  -->
 	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<tx:advice id="tran" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="add*"
+                isolation="DEFAULT"
+                propagation="REQUIRED"
+                read-only="false"
+                timeout="-1"
+                />
+            <tx:method name="del*"/>
+            <tx:method name="sel*" read-only="true"/>
+            <tx:method name="update*" timeout="10"/>
+        </tx:attributes>
+    </tx:advice>
+    
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	<aop:config>
+        <aop:pointcut 
+            expression="execution(* com.cn.hnust.service.*.*(..))" 
+            id="pc"/>
+        <aop:advisor advice-ref="tran" pointcut-ref="pc"/>
+    </aop:config>
 
 </beans>

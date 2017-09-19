@@ -87,4 +87,19 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
+  <!-- 查询所有用户 -->
+  <select id="userList" resultMap="BaseResultMap" parameterType="com.cn.hnust.domain.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_t 
+    LIMIT
+	${startRows},${pageSize}
+  </select>
+  
+  <select id="countUser" resultType="java.lang.Integer" parameterType="com.cn.hnust.domain.User">
+    select 
+    count(1)
+    from user_t
+  </select>
+  
 </mapper>
